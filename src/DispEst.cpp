@@ -226,8 +226,8 @@ int DispEst::CostConst_CPU()
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    pthread_t BCV_threads[maxDis];
-    buildCV_TD buildCV_TD_Array[maxDis];
+    pthread_t* BCV_threads = new pthread_t[maxDis];
+    buildCV_TD* buildCV_TD_Array = new buildCV_TD[maxDis];
 
 	constructor->preprocess(lImg, lGrdX);
 	constructor->preprocess(rImg, rGrdX);
@@ -266,6 +266,9 @@ int DispEst::CostConst_CPU()
             pthread_join(BCV_threads[d], &status);
         }
 	}
+
+	delete[] BCV_threads;
+	delete[] buildCV_TD_Array;
 	return 0;
 }
 

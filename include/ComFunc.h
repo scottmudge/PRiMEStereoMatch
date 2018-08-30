@@ -5,6 +5,8 @@
    Email: cl19g10 [at] ecs.soton.ac.uk
    Copyright (c) 2016 Charlie Leech, University of Southampton.
   ---------------------------------------------------------------------------*/
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -14,7 +16,6 @@
 #include <cstddef>
 #include <string>
 #include <time.h>
-#include <unistd.h>
 #include <math.h>
 #include <ctime>
 #include <chrono>
@@ -33,6 +34,12 @@
 #include <CL/cl.h>
 #endif
 #include <CL/cl_ext.h>
+#ifdef _WIN32
+#include <windows.h>
+LARGE_INTEGER getFILETIMEoffset();
+
+int clock_gettime(int X, struct timeval *tv);
+#endif
 
 //OpenCV Header
 #include <opencv2/opencv.hpp>
@@ -65,9 +72,9 @@ using namespace cv;
 enum buff_id {CVC_LIMGR, CVC_LIMGG, CVC_LIMGB, CVC_RIMGR, CVC_RIMGG, CVC_RIMGB, CVC_LGRDX, CVC_RGRDX, CV_LCV, CV_RCV, DS_LDM, DS_RDM};
 
 static float get_rt(){
-	struct timespec realtime;
-	clock_gettime(CLOCK_MONOTONIC,&realtime);
-	return (float)(realtime.tv_sec*1000000+realtime.tv_nsec/1000);
+	struct timeval realtime;
+	clock_gettime(0,&realtime);
+	return (float)(realtime.tv_sec*1000000+realtime.tv_usec);
 }
 
 #endif // COMFUNC_H

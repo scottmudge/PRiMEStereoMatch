@@ -410,9 +410,9 @@ public:
 private:
 
 	static float get_rt(){
-		struct timespec realtime;
-		clock_gettime(CLOCK_MONOTONIC,&realtime);
-		return (float)(realtime.tv_sec*1000000+realtime.tv_nsec/1000);
+		struct timeval realtime;
+		clock_gettime(0,&realtime);
+		return (float)(realtime.tv_sec*1000000+realtime.tv_usec);
 	}
 
 	/***************************************************************/

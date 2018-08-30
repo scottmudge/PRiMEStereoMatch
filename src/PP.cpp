@@ -372,8 +372,8 @@ void wgtMedian_thread(const Mat& Img, Mat& Dis, Mat& Valid, const int maxDis, co
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    pthread_t WM_row_threads[hei];
-    WM_row_TD WM_row_TD_Array[hei];
+    pthread_t* WM_row_threads = new pthread_t[hei];
+    WM_row_TD* WM_row_TD_Array = new WM_row_TD[hei];
 
 	for(int level = 0; level <= hei/threads; level ++)
 	{
@@ -396,6 +396,8 @@ void wgtMedian_thread(const Mat& Img, Mat& Dis, Mat& Valid, const int maxDis, co
             //printf("Joining WM Filtering @ y = %d\n", d);
         }
 	}
+	delete[] WM_row_threads;
+	delete[] WM_row_TD_Array;
 	return;
 }
 

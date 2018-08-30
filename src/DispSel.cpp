@@ -57,8 +57,8 @@ int DispSel::CVSelect_thread(cv::Mat* costVol, const unsigned int maxDis, cv::Ma
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    pthread_t DS_X_threads[hei];
-    DS_X_TD DS_X_TD_Array[hei];
+    pthread_t* DS_X_threads = new pthread_t[hei];
+    DS_X_TD* DS_X_TD_Array = new DS_X_TD[hei];
 
     for(int level = 0; level <= hei/threads; ++level)
 	{
@@ -77,6 +77,8 @@ int DispSel::CVSelect_thread(cv::Mat* costVol, const unsigned int maxDis, cv::Ma
             pthread_join(DS_X_threads[d], &status);
         }
 	}
+	delete[] DS_X_threads;
+	delete[] DS_X_TD_Array;
 	return 0;
 }
 
@@ -86,14 +88,14 @@ int DispSel::CVSelect(cv::Mat* costVol, const unsigned int maxDis, cv::Mat& disp
     unsigned int wid = dispMap.cols;
 
 	#pragma omp parallel for
-    for(unsigned int y = 0; y < hei; ++y)
+    for(int y = 0; y < hei; ++y)
     {
-		for(unsigned int x = 0; x < wid; ++x)
+		for(int x = 0; x < wid; ++x)
 		{
 			float minCost = DBL_MAX;
 			int minDis = 0;
 
-			for(unsigned int d = 1; d < maxDis; ++d)
+			for(int d = 1; d < maxDis; ++d)
 			{
 				float* costData = (float*)costVol[d].ptr<float>(y);
 				if(costData[x] < minCost)
